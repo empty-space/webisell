@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Webisell.Research.EF
+namespace Webisell.Domain.Entities
 {
-    class FilterValue
+    public class FilterValue
     {
         public int FilterValueId { get; set; }
         public int FilterId { get; set; }

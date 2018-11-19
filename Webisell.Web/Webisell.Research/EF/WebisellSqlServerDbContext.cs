@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Webisell.Domain.Entities;
 
 namespace Webisell.Research.EF
 {

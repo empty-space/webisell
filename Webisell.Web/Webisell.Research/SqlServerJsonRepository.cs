@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Webisell.Domain.Entities;
 using Webisell.Research.EF;
 
 namespace Webisell.Research

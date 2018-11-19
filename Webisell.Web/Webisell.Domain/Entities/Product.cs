@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Webisell.Domain.Entities
 {
-    class Product
+    public class Product
     {
+        public int ProductId { get; set; }
+        public int CategoryId { get; set; }
     }
 }
