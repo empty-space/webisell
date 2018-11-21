@@ -8,6 +8,6 @@ namespace Webisell.Domain.Entities
     {
         public int FilterValueId { get; set; }
         public int FilterId { get; set; }
-        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

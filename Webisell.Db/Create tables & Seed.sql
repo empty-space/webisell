@@ -1,7 +1,22 @@
 
+--Delete all Product_{X} tables
+DECLARE @sql NVARCHAR(MAX) = N'';
+
+SELECT @sql += '
+DROP TABLE IF EXISTS ' 
+    + QUOTENAME(s.name)
+    + '.' + QUOTENAME(t.name) + ';'
+    FROM sys.tables AS t
+    INNER JOIN sys.schemas AS s
+    ON t.[schema_id] = s.[schema_id] 
+    WHERE t.name LIKE 'Products[_]%';
+
+EXEC sp_executesql @sql;
+
 DROP PROCEDURE IF EXISTS Find_or_Create_FilterValue
 DROP PROCEDURE IF EXISTS Find_or_Create_FilterValue_byID
 DROP PROCEDURE IF EXISTS Insert_Product_category_id
+DROP PROCEDURE IF EXISTS Insert_Product_0
 DROP TABLE IF EXISTS dbo.Products_category_id
 DROP TABLE IF EXISTS dbo.Products
 DROP TABLE IF EXISTS dbo.FilterValues
@@ -24,6 +39,7 @@ CREATE TABLE dbo.Filters(
  CategoryId int NOT NULL  FOREIGN KEY  REFERENCES Categories(CategoryId), 
  FilterTypeId int NOT NULL FOREIGN KEY  REFERENCES FilterTypes(FilterTypeId), 
  Name nvarchar(250) NOT NULL,
+ IsSystem bit NOT NULL DEFAULT 0,
  ) 
 
 CREATE TABLE dbo.FilterValues(
@@ -38,11 +54,10 @@ CREATE TABLE dbo.Products(
  ProductId int IDENTITY(1,1) PRIMARY KEY, 
  CategoryId int FOREIGN KEY  REFERENCES Categories(CategoryId), 
 ) 
-CREATE TABLE dbo.Products_category_id(
+CREATE TABLE dbo.Products_0(
  Id int IDENTITY(1,1) PRIMARY KEY, 
  ProductId int FOREIGN KEY  REFERENCES Products(ProductId), 
  Name nvarchar(250) NOT NULL,
- Price int,
  Available bit DEFAULT 1,
  Rating int DEFAULT 0,
  --for Product detail page and comparison page
@@ -50,6 +65,7 @@ CREATE TABLE dbo.Products_category_id(
  --Filters:
  --mandatory
  Manufacturer int FOREIGN KEY  REFERENCES FilterValues(FilterValueId),
+ price as CONVERT(int, JSON_VALUE(Data, '$.price')),
  --depends on category
  operating_system int FOREIGN KEY  REFERENCES FilterValues(FilterValueId), 
  color int FOREIGN KEY  REFERENCES FilterValues(FilterValueId), 
@@ -104,17 +120,16 @@ END
 
 GO
 
-CREATE PROCEDURE Insert_Product_category_id (
- @categoryId int,
+CREATE PROCEDURE Insert_Product_0 (
  @name nvarchar(50),
  @data nvarchar(max) --json   
 )  AS  
 BEGIN  	
+	DECLARE @categoryId int = 0
 	--Product
 	INSERT INTO dbo.Products(CategoryId) 
 	VALUES (@categoryId)
-	DECLARE @ProductID int = @@IDENTITY
-	DECLARE @price int = CONVERT(int, JSON_VALUE(@data, '$.price')) 
+	DECLARE @ProductID int = @@IDENTITY	
 	--Filters
 	--GENERATED DYNAMICLY:
 	DECLARE @color nvarchar(max) = JSON_VALUE(@data, '$.color') 
@@ -130,18 +145,16 @@ BEGIN
 	-- multiple value Filters 
 	--  = are computed persistent columns
 
-	--Product_category_id
-	INSERT INTO Products_category_id (ProductId,Name,Price,Data,Manufacturer,color,operating_system)
+	--Product_0
+	INSERT INTO Products_0 (ProductId,Name,Data,Manufacturer,color,operating_system)
 	VALUES(
 		@ProductID,
 		@name,
-		@price,
 		@data,
 		@manufacturerId,
 		@colorId,
 		@operating_systemId
-	)
-	RETURN
+	)	
 END  
 
 GO
@@ -173,40 +186,62 @@ DECLARE @data2 nvarchar(max)= '{
 IF NOT EXISTS (SELECT * FROM Categories WHERE Name = 'category_seed_sql')
 BEGIN
 	--SEED
-	INSERT INTO Categories(Name)
-	VALUES ('category_seed_sql')
-	DECLARE @categoryId int = @@IDENTITY
+	SET IDENTITY_INSERT Categories ON;
 
-	INSERT INTO FilterTypes(Name)
-	VALUES ('FilterValue OR')
-	DECLARE @filterTypeId int = @@IDENTITY
-	INSERT INTO FilterTypes(Name)
-	VALUES ('FilterValue AND')
-	INSERT INTO FilterTypes(Name)
-	VALUES ('Multiple Columns OR')
-	INSERT INTO FilterTypes(Name)
-	VALUES ('Integer OR')
+	INSERT INTO Categories(CategoryId,Name)
+	VALUES (0,'category_seed_sql')	
+	DECLARE @categoryId int = 0
+
+	SET IDENTITY_INSERT Categories OFF;
+
+	SET IDENTITY_INSERT FilterTypes ON;
+	INSERT INTO FilterTypes(FilterTypeId,Name)
+	VALUES (1,'FilterValue OR')
+	INSERT INTO FilterTypes(FilterTypeId,Name)
+	VALUES (2,'Multiple Columns OR')
+	INSERT INTO FilterTypes(FilterTypeId,Name)
+	VALUES (3,'Multiple Columns AND')
+	INSERT INTO FilterTypes(FilterTypeId,Name)
+	VALUES (4,'Integer OR')
+	INSERT INTO FilterTypes(FilterTypeId,Name)
+	VALUES (5,'Integer Range')
+
+	SET IDENTITY_INSERT FilterTypes OFF;
+
+	INSERT INTO Filters(CategoryId,Name,FilterTypeId,IsSystem)
+	VALUES (@categoryId,'price',5,1)
 
 	INSERT INTO Filters(CategoryId,Name,FilterTypeId)
-	VALUES (@categoryId,'manufacturer',@filterTypeId)
+	VALUES (@categoryId,'manufacturer',1)
 
 	INSERT INTO Filters(CategoryId,Name,FilterTypeId)
-	VALUES (@categoryId,'color',@filterTypeId)
+	VALUES (@categoryId,'color',1)
 
 	INSERT INTO Filters(CategoryId,Name,FilterTypeId)
-	VALUES (@categoryId,'operating_system',@filterTypeId)
+	VALUES (@categoryId,'operating_system',1)
 
-	exec Insert_Product_category_id @categoryId,'Samsung S8 seed sql',@data
-	PRINT IDENT_CURRENT('Products_category_id')
+	exec Insert_Product_0 'Samsung S8 seed sql',@data
+	PRINT IDENT_CURRENT('Products_0')
 	PRINT SCOPE_IDENTITY()
 	PRINT @@IDENTITY
-	exec Insert_Product_category_id @categoryId,'Apple IPhone 5s',@data2	
+	exec Insert_Product_0 'Apple IPhone 5s',@data2	
 	PRINT @@IDENTITY
 END
 
 GO
 
-SELECT * FROM Products_category_id
+SELECT * FROM Products_0
 SELECT * FROM Filters
 SELECT * FROM FilterValues
 SELECT * FROM Categories
+SELECT * FROM Products_11
+
+SELECT  ProductId,
+		Id as Specific_Table_Product_Id, 
+		Name,
+		price,
+		Available,
+		Data as JsonData
+FROM Products_0
+
+

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webisell.Domain", "Webisell
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webisell.Research", "Webisell.Research\Webisell.Research.csproj", "{0C0237E8-A172-41FA-ACCE-0717FB7A4237}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webisell.Persistent", "Webisell.Persistent\Webisell.Persistent.csproj", "{03F82124-A007-44E4-A135-0C671B922EB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0C0237E8-A172-41FA-ACCE-0717FB7A4237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C0237E8-A172-41FA-ACCE-0717FB7A4237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C0237E8-A172-41FA-ACCE-0717FB7A4237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03F82124-A007-44E4-A135-0C671B922EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03F82124-A007-44E4-A135-0C671B922EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03F82124-A007-44E4-A135-0C671B922EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03F82124-A007-44E4-A135-0C671B922EB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

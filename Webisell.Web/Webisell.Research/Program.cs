@@ -9,7 +9,16 @@ namespace Webisell.Research
     {
         static void Main(string[] args)
         {
-            var repositories = new List<ITableRepository> { new SqlServerJsonRepository() };
+            var sqlrepo = new SqlServerJsonRepository();
+            var repositories = new List<ITableRepository> {sqlrepo };
+
+            var products = sqlrepo.GetProducts(0);
+            
+            foreach (var p in products)
+            {
+                Console.WriteLine($"{p.ProductId}\t{p.Name}\t{p.Price}\t{p.JsonData} ");
+            }
+
             foreach (var repo in repositories)
             {
                 Console.WriteLine(repo.GetType().Name);

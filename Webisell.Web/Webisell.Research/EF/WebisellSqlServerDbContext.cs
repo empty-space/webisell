@@ -1,21 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Webisell.Domain.Entities;
+using Webisell.Persistent;
 
 namespace Webisell.Research.EF
 {
-    class WebisellSqlServerDbContext : DbContext
+    public class WebisellSqlServerDbContext : WebisellDbContext 
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public WebisellSqlServerDbContext():base()
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-HSIM5BD;Database=Webisell.Database;User Id=sa;Password = energysuite;");
-        }
 
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Filter> Filters { get; set; }
-        public DbSet<FilterValue> FilterValues { get; set; }
+        }
+        public WebisellSqlServerDbContext(DbContextOptions options) : base(options)
+        {
+        }
     }
 }
