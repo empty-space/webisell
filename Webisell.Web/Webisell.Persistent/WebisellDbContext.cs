@@ -18,7 +18,7 @@ namespace Webisell.Persistent
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {         
             if(!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("Server=DESKTOP-HSIM5BD;Database=Webisell.Database;User Id=sa;Password=energysuite;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-HSIM5BD;Database=Webisell.Database;Integrated Security=True");
         }
 
         public DbSet<Category> Categories { get; set; }

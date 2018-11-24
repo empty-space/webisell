@@ -234,7 +234,7 @@ SELECT * FROM Products_0
 SELECT * FROM Filters
 SELECT * FROM FilterValues
 SELECT * FROM Categories
-SELECT * FROM Products_11
+SELECT * FROM Products_0
 
 SELECT  ProductId,
 		Id as Specific_Table_Product_Id, 
