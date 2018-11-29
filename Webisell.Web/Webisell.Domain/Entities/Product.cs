@@ -14,6 +14,7 @@ namespace Webisell.Domain.Entities
         public string Name { get; set; }
         public int Price { get; set; }
         public bool Available { get; set; }
-        public string JsonData { get; set; }
+        //JSON
+        public string Data { get; set; }
     }
 }

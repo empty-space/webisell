@@ -16,7 +16,7 @@ namespace Webisell.Research
             
             foreach (var p in products)
             {
-                Console.WriteLine($"{p.ProductId}\t{p.Name}\t{p.Price}\t{p.JsonData} ");
+                Console.WriteLine($"{p.ProductId}\t{p.Name}\t{p.Price}\t{p.Data} ");
             }
 
             foreach (var repo in repositories)
