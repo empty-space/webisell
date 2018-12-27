@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Webisell.Web.Commands;
+using Webisell.Web.Configuration;
 
 namespace Webisell.Web
 {
@@ -30,6 +32,11 @@ namespace Webisell.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddTransient(typeof(GetFilteredProductsCommand));
+            services.AddTransient(typeof(SearchProductsCommand));
+            services.AddTransient(typeof(GetFiltersViewModelCommand));
+            services.AddTransient(typeof(GetDetailsViewModelCommand));
+            services.AddTransient(typeof(ISettingsProvider), typeof(DefaultSettingsProvider));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -49,10 +56,20 @@ namespace Webisell.Web
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            app.Map("/angular", action =>
+            {
+                action.Use(async (context, next) =>
+                {
+                    await context.Response.WriteAsync("<b>ANGULAR</b>");
+                    await next();
+                });
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
+                    //template: "{controller=Products}/{action=FilterPage}/{id?}");
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }

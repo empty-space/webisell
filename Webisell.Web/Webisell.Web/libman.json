@@ -24,6 +24,26 @@
         "fonts/glyphicons-halflings-regular.woff",
         "fonts/glyphicons-halflings-regular.woff2"
       ]
+    },
+
+    //{
+    //  "provider": "cdnjs",
+    //  "library": "twitter-bootstrap@4.2.1",
+    //  "destination": "wwwroot/lib/bootstrap/",
+    //  "files": [
+    //    "css/bootstrap.css",
+    //    "js/bootstrap.js"
+    //  ]
+    //},
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap-slider@10.4.0",
+      "destination": "wwwroot/lib/bootstrap-slider/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/lib/font-awesome/"
     }
   ]
 }
